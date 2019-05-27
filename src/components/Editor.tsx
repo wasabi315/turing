@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Circle from '../shapes/Circle';
+import { Point } from '../utils';
 
 interface EditorProps {
   width: number;
@@ -96,6 +97,14 @@ class Editor extends React.Component<EditorProps, EditorState> {
     const circles = this.state.circles.concat(circle);
     this.setState({ circles: circles });
     this.renderCanvas();
+  }
+
+  getMousePosOnCanvas = (e: MouseEvent): Point => {
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
   }
 
   renderCanvas = (): void => {

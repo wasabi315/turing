@@ -50,11 +50,9 @@ class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   onMouseDown = (e: MouseEvent): void => {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const pos = this.getMousePosOnCanvas(e);
     this.state.circles.map((c: Circle, i: number) => {
-      if(c.isOnCircle(x, y)) {
+      if(c.isOnCircle(pos)) {
         this.setState({
           isDragging: true,
           dragTarget: i,
@@ -71,17 +69,11 @@ class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   onMouseMove = (e: MouseEvent): void => {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
+    const pos = this.getMousePosOnCanvas(e);
     if(this.state.isDragging) {
       const circles = this.state.circles.slice();
       circles.map((c: Circle, i: number) => {
-        if(i === this.state.dragTarget) {
-          c.x = x;
-          c.y = y;
-        }
+        if(i === this.state.dragTarget) { c.center = pos };
       });
       this.setState({ circles: circles });
       this.renderCanvas();
@@ -90,10 +82,8 @@ class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   onDblClick = (e: MouseEvent): void => {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const circle = new Circle(x, y, 40, this.state.circles.length);
+    const pos = this.getMousePosOnCanvas(e);
+    const circle = new Circle(pos, 40, this.state.circles.length);
     const circles = this.state.circles.concat(circle);
     this.setState({ circles: circles });
     this.renderCanvas();

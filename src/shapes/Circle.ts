@@ -1,13 +1,13 @@
+import { Point } from '../utils';
+
 class Circle {
 
-  x: number;
-  y: number;
+  center: Point;
   r: number;
   i: number;
 
-  constructor(x: number, y:number, r: number, i: number) {
-    this.x = x;
-    this.y = y;
+  constructor(p: Point, r: number, i: number) {
+    this.center = p;
     this.r = r;
     this.i = i;
   }
@@ -17,19 +17,19 @@ class Circle {
     ctx.shadowBlur = 10;
     ctx.shadowColor = 'black';
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+    ctx.arc(this.center.x, this.center.y, this.r, 0, Math.PI * 2, true);
     ctx.fillStyle = '#88c0d0';
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.font = 'bold 30pt Arial';
     ctx.fillStyle = '#2e3440';
     ctx.textAlign = 'center';
-    ctx.fillText(String(this.i), this.x, this.y + 12);
+    ctx.fillText(String(this.i), this.center.x, this.center.y + 12);
     ctx.restore();
   }
 
-  isOnCircle = (x: number, y: number): boolean => (
-    Math.pow(this.x -x, 2) + Math.pow(this.y - y, 2) <= Math.pow(this.r, 2)
+  isOnCircle = (p: Point): boolean => (
+    Math.pow(this.center.x - p.x, 2) + Math.pow(this.center.y - p.y, 2) <= Math.pow(this.r, 2)
   )
 
 }

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Canvas from './Canvas';
-import Circle from '../Circle';
+import Circle from '../shapes/Circle';
 
 interface EditorProps {
   width: number;
@@ -33,8 +32,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
     if(ctx) {
       this.ctx = ctx;
     }
-    this.ctx.fillStyle = '#2e3440';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.renderCanvas();
     this.canvas.addEventListener('mousedown', this.onMouseDown);
     this.canvas.addEventListener('mouseup', this.onMouseUp);
     this.canvas.addEventListener('mousemove', this.onMouseMove);
@@ -77,16 +75,15 @@ class Editor extends React.Component<EditorProps, EditorState> {
     const y = e.clientY - rect.top;
 
     if(this.state.isDragging) {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.fillStyle = '#2e3440';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.state.circles.map((c: Circle, i: number) => {
+      const circles = this.state.circles.slice();
+      circles.map((c: Circle, i: number) => {
         if(i === this.state.dragTarget) {
           c.x = x;
           c.y = y;
         }
-        c.draw(this.ctx);
       });
+      this.setState({ circles: circles });
+      this.renderCanvas();
     }
 
   }
@@ -97,10 +94,17 @@ class Editor extends React.Component<EditorProps, EditorState> {
     const y = e.clientY - rect.top;
     const circle = new Circle(x, y, 40, this.state.circles.length);
     const circles = this.state.circles.concat(circle);
-    this.setState({
-      circles: circles,
-    });
-    circle.draw(this.ctx);
+    this.setState({ circles: circles });
+    this.renderCanvas();
+  }
+
+  renderCanvas = (): void => {
+    this.ctx.save();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = '#2e3440';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.state.circles.map((c: Circle) => c.draw(this.ctx));
+    this.ctx.restore();
   }
 
   render() {

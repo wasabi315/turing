@@ -58,14 +58,16 @@ class Editor extends React.Component<EditorProps, EditorState> {
 
   onMouseDown = (e: MouseEvent): void => {
     const pos = this.getMousePosOnCanvas(e);
-    this.state.circles.map((c: Circle, i: number) => {
-      if(c.isOnCircle(pos)) {
-        this.setState({
-          isDragging: true,
-          dragTarget: i,
-        });
-      }
-    })
+    if(e.shiftKey) {
+      this.state.circles.map((c: Circle, i: number) => {
+        if(c.isOnCircle(pos)) {
+          this.setState({
+            isDragging: true,
+            dragTarget: i,
+          });
+        }
+      })
+    }
   }
 
   onMouseUp = (e: MouseEvent): void => {
@@ -97,7 +99,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   onClick = (e: MouseEvent): void => {
-    if (e.shiftKey) {
+    if (!e.shiftKey) {
       const pos = this.getMousePosOnCanvas(e);
       if (this.state.arrowStart === null) {
         this.state.circles.map((c: Circle, i: number) => {

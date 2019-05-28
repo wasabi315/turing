@@ -34,6 +34,18 @@ class Arrow {
     ctx.restore();
   }
 
+  shrink = (dl: number): void => {
+    const theta = Math.atan2(this.end.y - this.start.y, this.end.x - this.start.x);
+    this.start = {
+      x: this.start.x + dl * Math.cos(theta),
+      y: this.start.y + dl * Math.sin(theta),
+    };
+    this.end = {
+      x: this.end.x - dl * Math.cos(theta),
+      y: this.end.y - dl * Math.sin(theta),
+    };
+  }
+
 }
 
 export default Arrow;

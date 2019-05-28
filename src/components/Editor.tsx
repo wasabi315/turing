@@ -111,6 +111,7 @@ class Editor extends React.Component<EditorProps, EditorState> {
             const start = this.state.circles[this.state.arrowStart].center;
             const end = c.center;
             const arrow = new Arrow(start, end);
+            arrow.shrink(55);
             const arrows = this.state.arrows.concat(arrow);
             this.setState({
               arrows: arrows,

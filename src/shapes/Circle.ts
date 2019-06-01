@@ -21,7 +21,7 @@ class Circle {
     ctx.fillStyle = '#88c0d0';
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.font = 'bold 30pt Arial';
+    ctx.font = 'bold 30pt "Didact Gothic"';
     ctx.fillStyle = '#2e3440';
     ctx.textAlign = 'center';
     ctx.fillText(String(this.i), this.center.x, this.center.y + 12);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Canvas from './components/Canvas';
+import Header from './components/Header';
 import Editor from './components/Editor';
 import './App.css';
 
@@ -7,10 +7,13 @@ class App extends React.Component<{}, {}> {
 
   render() {
     return (
-      <Editor
-        width={window.innerWidth}
-        height={window.innerHeight}
-      />
+      <div>
+        <Header />
+        <Editor
+          width={window.innerWidth}
+          height={window.innerHeight}
+        />
+      </div>
     )
   }
 }

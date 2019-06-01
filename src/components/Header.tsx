@@ -7,7 +7,7 @@ const Div = styled.div`
   flex-direction: column;
   align-items: baseline;
   justify-content: center;
-  font-size: 'Didact Gothic', sans-serif;
+  font-family: 'Didact Gothic', sans-serif;
   font-size: calc(10px + 2vmin);
   color: #d8dee9;
 `

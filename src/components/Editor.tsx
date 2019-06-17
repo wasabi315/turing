@@ -2,7 +2,7 @@ import * as React from 'react';
 import Circle from '../shapes/Circle';
 import Arrow from '../shapes/Arrow';
 import Canvas from './Canvas';
-import { Point } from '../lib/Point';
+import { Point } from '../../lib/Point';
 
 interface EditorProps {
   width: number;

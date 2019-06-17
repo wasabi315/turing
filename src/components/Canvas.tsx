@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Point, dist } from '../lib/Point';
+import { Point, dist } from '../../lib/Point';
 
 interface CanvasProps {
   width: number;

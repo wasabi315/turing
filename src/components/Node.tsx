@@ -17,7 +17,7 @@ const Node: React.SFC<NodeProps> = props => {
       draggable={true}
     >
       <Circle
-        radius={35}
+        radius={30}
         fill="#88c0d0"
         shadowColor="#2e3440"
         shadowOffsetY={5}
@@ -26,14 +26,14 @@ const Node: React.SFC<NodeProps> = props => {
       />
       <Text
         text={String(props.id)}
-        x={-35}
-        y={-16}
-        fontSize={32}
+        x={-30}
+        y={-30}
+        fontSize={28}
         fontFamily="Didact Gothic"
         fontStyle="bold"
         fill="#2e3440"
-        width={70}
-        height={70}
+        width={60}
+        height={60}
         align="center"
         verticalAlign="middle"
       />

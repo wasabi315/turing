@@ -20,6 +20,7 @@ const Edge: React.SFC<EdgeProps> = props => {
       points={points}
       fill="#4c566a"
       stroke="#4c566a"
+      strokeWidth={4}
       pointerWidth={20}
       pointerLength={20}
     />

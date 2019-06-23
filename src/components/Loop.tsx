@@ -1,29 +1,35 @@
 import * as React from 'react';
-import { Arrow } from 'react-konva';
+import { Arc, Group, RegularPolygon } from 'react-konva';
 import { Point } from '../../lib/Point';
 
 interface LoopProps {
   id: number;
   pos: Point;
-  radius: number;
 }
 
 const Loop: React.SFC<LoopProps> = props => {
 
-  const points =
-    [ props.pos.x, props.pos.y,
-      props.pos.x, props.pos.y + 2 * props.radius,
-      props.pos.x, props.pos.y,
-    ];
   return (
-    <Arrow
-      points={points}
-      tension={1.0}
-      fill="#4c566a"
-      stroke="#4c566a"
-      pointerWidth={20}
-      pointerLength={20}
-    />
+    <Group
+      x={props.pos.x}
+      y={props.pos.y - 45}
+    >
+      <Arc
+        innerRadius={28}
+        outerRadius={32}
+        angle={230}
+        rotationDeg={155}
+        fill="#4c566a"
+      />
+      <RegularPolygon
+        x={-28}
+        y={7}
+        sides={3}
+        radius={10}
+        fill="#4c566a"
+        rotationDeg={40}
+      />
+    </Group>
   );
 
 }

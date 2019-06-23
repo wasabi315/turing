@@ -1,10 +1,15 @@
 import * as React from 'react';
+import { KonvaEventObject } from 'konva/types/Node';
 import { Circle, Group, Text } from 'react-konva';
 import { Point } from '../../lib/Point';
 
 interface NodeProps {
   id: number;
   pos: Point;
+  onClick: (e: KonvaEventObject<MouseEvent>) => void;
+  onDragStart: (e: KonvaEventObject<MouseEvent>) => void;
+  onDragMove: (e: KonvaEventObject<MouseEvent>) => void;
+  onDragEnd: (e: KonvaEventObject<MouseEvent>) => void;
 }
 
 const Node: React.SFC<NodeProps> = props => {
@@ -15,6 +20,10 @@ const Node: React.SFC<NodeProps> = props => {
       x={props.pos.x}
       y={props.pos.y}
       draggable={true}
+      onClick={props.onClick}
+      onDragStart={props.onDragStart}
+      onDragMove={props.onDragMove}
+      onDragEnd={props.onDragEnd}
     >
       <Circle
         radius={30}

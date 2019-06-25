@@ -7,9 +7,7 @@ interface NodeProps {
   id: number;
   pos: Point;
   onClick: (e: KonvaEventObject<MouseEvent>) => void;
-  onDragStart: (e: KonvaEventObject<MouseEvent>) => void;
-  onDragMove: (e: KonvaEventObject<MouseEvent>) => void;
-  onDragEnd: (e: KonvaEventObject<MouseEvent>) => void;
+  onDrag: (e: KonvaEventObject<MouseEvent>) => void;
 }
 
 const Node: React.SFC<NodeProps> = props => {
@@ -21,9 +19,8 @@ const Node: React.SFC<NodeProps> = props => {
       y={props.pos.y}
       draggable={true}
       onClick={props.onClick}
-      onDragStart={props.onDragStart}
-      onDragMove={props.onDragMove}
-      onDragEnd={props.onDragEnd}
+      onDragMove={props.onDrag}
+      onDragEnd={props.onDrag}
     >
       <Circle
         radius={30}

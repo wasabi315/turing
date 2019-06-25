@@ -17,9 +17,13 @@ const Loop: React.SFC<LoopProps> = props => {
       <Arc
         innerRadius={28}
         outerRadius={32}
+        fill="#4c566a"
+        shadowColor="#2e3440"
+        shadowBlur={5}
+        shadowOffsetX={5}
+        shadowOffsetY={5}
         angle={230}
         rotationDeg={155}
-        fill="#4c566a"
       />
       <RegularPolygon
         x={-28}

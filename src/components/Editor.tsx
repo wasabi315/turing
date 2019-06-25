@@ -1,8 +1,11 @@
 import * as React from 'react';
-import Circle from '../shapes/Circle';
-import Arrow from '../shapes/Arrow';
-import Canvas from './Canvas';
+import { KonvaEventObject } from 'konva/types/Node';
+import { Layer, Rect, Stage } from 'react-konva';
+import Graph from '../../lib/Graph';
 import { Point } from '../../lib/Point';
+import Node from './Node';
+import Edge from './Edge';
+import Loop from './Loop';
 
 interface EditorProps {
   width: number;
@@ -10,10 +13,9 @@ interface EditorProps {
 }
 
 interface EditorState {
-  arrows: Arrow[];
-  circles: Circle[];
+  graph: Graph;
+  nodePos: Map<number, Point>;
   arrowStart: number | null;
-  dragTarget: number | null;
 }
 
 class Editor extends React.Component<EditorProps, EditorState> {
@@ -21,99 +23,100 @@ class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props: EditorProps) {
     super(props);
     this.state = {
-      arrows: [],
-      circles: [],
+      graph: new Graph(),
+      nodePos: new Map(),
       arrowStart: null,
-      dragTarget: null,
     };
   }
 
-  onClickNode = (i: number) => {
-    if(this.state.arrowStart !== null) {
-      const start = this.state.circles[this.state.arrowStart].center;
-      const end = this.state.circles[i].center;
-      const arrow = new Arrow(start, end);
-      arrow.shrink(55);
-      const arrows = this.state.arrows.concat(arrow);
-      this.setState({
-        arrows: arrows,
-        arrowStart: null,
-      });
-    } else {
+  handleClick = (e: KonvaEventObject<MouseEvent>): void => {
+    const pos: Point = e.target.getStage().getPointerPosition();
+    const ix: number = this.state.graph.nextIx();
+    this.setState(state => ({
+      ...state,
+      graph: state.graph.addNode(ix),
+      nodePos: state.nodePos.set(ix, pos),
+    }));
+  }
+
+  handleNodeClick = (_: KonvaEventObject<MouseEvent>, i: number): void => {
+    const start = this.state.arrowStart;
+    if(start === null) {
       this.setState({ arrowStart: i });
+    } else {
+      this.setState(state => ({
+        ...state,
+        graph: state.graph.addEdge(start, i),
+        arrowStart: null,
+      }));
     }
   }
 
-  addNode = (p: Point) => {
-    const circle = new Circle(p, 40, this.state.circles.length);
-    const circles = this.state.circles.concat(circle);
-    this.setState({ circles: circles });
+  handleNodeDrag = (e: KonvaEventObject<MouseEvent>, i: number): void => {
+    const pos: Point = e.target.getStage().getPointerPosition();
+    this.setState(state => ({
+      ...state,
+      nodePos: state.nodePos.set(i, pos),
+    }));
   }
 
-  withClickPos = (p: Point) => {
-    let b = true;
-    this.state.circles.map((c: Circle, i: number) => {
-      if(c.isOnCircle(p)) {
-        this.onClickNode(i);
-        b = false;
+  renderNode = () => {
+    let nodes: React.ReactElement[] = [];
+    this.state.nodePos.forEach((p: Point, i: number) => {
+      nodes.push(
+        <Node
+          id={i}
+          pos={p}
+          onClick={e => this.handleNodeClick(e, i)}
+          onDrag={e => this.handleNodeDrag(e, i)}
+        />
+      );
+    });
+    return nodes;
+  }
+
+  renderEdge = () => {
+    let edges: React.ReactElement[] = [];
+    this.state.graph.forEachEdge((i, j) => {
+      if(i === j) {
+        edges.push(
+          <Loop
+            id={i}
+            pos={this.state.nodePos.get(i)!}
+          />
+        );
+      } else {
+        edges.push(
+          <Edge
+            startId={i}
+            endId={j}
+            startPos={this.state.nodePos.get(i)!}
+            endPos={this.state.nodePos.get(j)!}
+          />
+        );
       }
     });
-    if(b) this.addNode(p);
-  }
-
-  withDblClickPos = (_: Point) => alert('dblclick');
-
-  withMouseDownPos = (p: Point) => {
-    this.state.circles.map((c: Circle, i: number) => {
-      if(c.isOnCircle(p)) {
-        this.setState({ dragTarget: i });
-        return;
-      }
-    });
-  }
-
-  withMouseMovePos = (p: Point) => {
-    const circles = this.state.circles.slice();
-    circles.map((c: Circle, i: number) => {
-      if(i === this.state.dragTarget) { c.center = p };
-    });
-    this.setState({ circles: circles });
-  }
-
-  withMouseUpPos = (_: Point) => {
-    this.setState({ dragTarget: null });
-  }
-
-  onMouseOut = () => {
-    this.setState({
-      dragTarget: null,
-    });
-  }
-
-  draw = (ctx: CanvasRenderingContext2D) => {
-    ctx.save();
-    ctx.clearRect(0, 0, this.props.width, this.props.height);
-    ctx.fillStyle = '#2e3440';
-    ctx.fillRect(0, 0, this.props.width, this.props.height);
-    this.state.arrows.map((a: Arrow) => a.draw(ctx));
-    this.state.circles.map((c: Circle) => c.draw(ctx));
-    ctx.restore();
+    return edges;
   }
 
   render() {
     return (
-      <Canvas
+      <Stage
         width={this.props.width}
         height={this.props.height}
-        draw={this.draw}
-        withClickPos={this.withClickPos}
-        withDblClickPos={this.withDblClickPos}
-        withMouseDownPos={this.withMouseDownPos}
-        withMouseMovePos={this.withMouseMovePos}
-        withMouseUpPos={this.withMouseUpPos}
-        onMouseOut={this.onMouseOut}
-      />
-    )
+      >
+        <Layer>
+          <Rect
+            width={this.props.width}
+            height={this.props.height}
+            fill="#2e3440"
+            onClick={this.handleClick}
+          />
+          {this.renderEdge()}
+          {this.renderNode()}
+        </Layer>
+      </Stage>
+    );
   }
 
 }

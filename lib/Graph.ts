@@ -1,34 +1,53 @@
 class Graph {
 
   private adjList: Map<number, number[]>;
+  private ix: number;
 
   constructor() {
     this.adjList = new Map();
+    this.ix = 0;
   }
 
-  addVertex(i: number): void {
+  nextIx(): number {
+    return this.ix;
+  }
+
+  addNode(i: number): Graph {
     if(!this.adjList.has(i)) {
       this.adjList.set(i, []);
+      this.ix++;
     }
+    return this;
   }
 
-  deleteVertex(i: number): void {
+  deleteNode(i: number): Graph {
     this.adjList.delete(i);
+    return this;
   }
 
-  addEdge(i: number, j: number): void {
+  addEdge(i: number, j: number): Graph {
     if(this.adjList.has(i) && this.adjList.has(j)) {
-      let vs = this.adjList.get(i).slice();
-      vs.push(j);
-      this.adjList.set(i, vs);
+      const vs = this.adjList.get(i);
+      if(vs) {
+        vs.push(j);
+        this.adjList.set(i, vs);
+      }
     }
+    return this;
   }
 
-  removeEdge(i: number, j: number): void {
+  removeEdge(i: number, j: number): Graph {
     if(this.adjList.has(i)) {
-      const vs = this.adjList.get(i).filter(n => n !== j);
-      this.adjList.set(i, vs);
+      const vs = this.adjList.get(i);
+      if(vs) {
+        this.adjList.set(i, vs.filter(n => n !== j));
+      }
     }
+    return this;
+  }
+
+  forEachEdge(fn: (i: number, j: number) => void): void {
+    this.adjList.forEach((is, i) => is.forEach(j => fn(i, j)));
   }
 
 }

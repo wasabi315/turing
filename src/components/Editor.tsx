@@ -15,7 +15,7 @@ interface EditorProps {
   height: number;
 }
 
-const Editor: React.FC<EditorProps> = observer(props => {
+const Editor: React.SFC<EditorProps> = observer(props => {
 
   const graphStore = React.useContext(GraphStoreContext);
   const editorStore = React.useContext(EditorStoreContext);
@@ -27,28 +27,12 @@ const Editor: React.FC<EditorProps> = observer(props => {
     editorStore.nodePos.set(ix, pos);
   }
 
-  const handleNodeClick = (i: number) => (_: KonvaEventObject<MouseEvent>) => {
-    if(editorStore.arrowStart === null) {
-      editorStore.arrowStart = i;
-    } else {
-      graphStore.graph.addEdge(editorStore.arrowStart, i);
-      editorStore.arrowStart = null;
-    }
-  }
-
-  const handleNodeDrag = (i: number) => (e: KonvaEventObject<MouseEvent>) => {
-    const pos: Point = e.target.getStage().getPointerPosition();
-    editorStore.nodePos.set(i, pos);
-  }
-
   const renderNode = () => {
     let nodes: React.ReactElement[] = [];
     editorStore.nodePos.forEach((p, i) => nodes.push(
         <Node
           id={i}
           pos={p}
-          onClick={handleNodeClick(i)}
-          onDrag={handleNodeDrag(i)}
         />
       )
     );

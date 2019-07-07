@@ -12,112 +12,84 @@ interface EditorProps {
   height: number;
 }
 
-interface EditorState {
-  graph: Graph;
-  nodePos: Map<number, Point>;
-  arrowStart: number | null;
-}
+const Editor: React.FC<EditorProps> = props => {
 
-class Editor extends React.Component<EditorProps, EditorState> {
+  const [graphState, setGraphState] = React.useState({ graph: new Graph() });
+  const [nodePosState, setNodePosState] = React.useState({ nodePos: new Map() });
+  const [arrowStart, setArrowStart] = React.useState<number | null>(null);
 
-  constructor(props: EditorProps) {
-    super(props);
-    this.state = {
-      graph: new Graph(),
-      nodePos: new Map(),
-      arrowStart: null,
-    };
-  }
-
-  handleClick = (e: KonvaEventObject<MouseEvent>): void => {
+  const handleClick = (e: KonvaEventObject<MouseEvent>): void => {
     const pos: Point = e.target.getStage().getPointerPosition();
-    const ix: number = this.state.graph.nextIx();
-    this.setState(state => ({
-      ...state,
-      graph: state.graph.addNode(ix),
-      nodePos: state.nodePos.set(ix, pos),
-    }));
+    const ix: number = graphState.graph.nextIx();
+    setGraphState({ graph: graphState.graph.addNode(ix) });
+    setNodePosState({ nodePos: nodePosState.nodePos.set(ix, pos) });
   }
 
-  handleNodeClick = (_: KonvaEventObject<MouseEvent>, i: number): void => {
-    const start = this.state.arrowStart;
-    if(start === null) {
-      this.setState({ arrowStart: i });
+  const handleNodeClick = (i: number) => (_: KonvaEventObject<MouseEvent>): void => {
+    if(arrowStart === null) {
+      setArrowStart(i);
     } else {
-      this.setState(state => ({
-        ...state,
-        graph: state.graph.addEdge(start, i),
-        arrowStart: null,
-      }));
+      setGraphState({ graph: graphState.graph.addEdge(arrowStart, i) });
+      setArrowStart(null);
     }
   }
 
-  handleNodeDrag = (e: KonvaEventObject<MouseEvent>, i: number): void => {
+  const handleNodeDrag = (i: number) => (e: KonvaEventObject<MouseEvent>): void => {
     const pos: Point = e.target.getStage().getPointerPosition();
-    this.setState(state => ({
-      ...state,
-      nodePos: state.nodePos.set(i, pos),
-    }));
+    setNodePosState({ nodePos: nodePosState.nodePos.set(i, pos) });
   }
 
-  renderNode = () => {
+  const renderNode = () => {
     let nodes: React.ReactElement[] = [];
-    this.state.nodePos.forEach((p: Point, i: number) => {
-      nodes.push(
+    nodePosState.nodePos.forEach((p, i) => nodes.push(
         <Node
           id={i}
           pos={p}
-          onClick={e => this.handleNodeClick(e, i)}
-          onDrag={e => this.handleNodeDrag(e, i)}
+          onClick={handleNodeClick(i)}
+          onDrag={handleNodeDrag(i)}
         />
-      );
-    });
+      )
+    );
     return nodes;
   }
 
-  renderEdge = () => {
+  const renderEdge = () => {
     let edges: React.ReactElement[] = [];
-    this.state.graph.forEachEdge((i, j) => {
-      if(i === j) {
-        edges.push(
+    graphState.graph.forEachEdge((i, j) => edges.push(
+      i === j
+        ?
           <Loop
             id={i}
-            pos={this.state.nodePos.get(i)!}
+            pos={nodePosState.nodePos.get(i)!}
           />
-        );
-      } else {
-        edges.push(
+        :
           <Edge
             startId={i}
             endId={j}
-            startPos={this.state.nodePos.get(i)!}
-            endPos={this.state.nodePos.get(j)!}
+            startPos={nodePosState.nodePos.get(i)!}
+            endPos={nodePosState.nodePos.get(j)!}
           />
-        );
-      }
-    });
+    ));
     return edges;
   }
 
-  render() {
-    return (
-      <Stage
-        width={this.props.width}
-        height={this.props.height}
-      >
-        <Layer>
-          <Rect
-            width={this.props.width}
-            height={this.props.height}
-            fill="#2e3440"
-            onClick={this.handleClick}
-          />
-          {this.renderEdge()}
-          {this.renderNode()}
-        </Layer>
-      </Stage>
-    );
-  }
+  return (
+    <Stage
+      width={props.width}
+      height={props.height}
+    >
+      <Layer>
+        <Rect
+          width={props.width}
+          height={props.height}
+          fill="#2e3440"
+          onClick={handleClick}
+        />
+        {renderEdge()}
+        {renderNode()}
+      </Layer>
+    </Stage>
+  );
 
 }
 

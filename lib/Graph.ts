@@ -1,6 +1,11 @@
+import { observable } from 'mobx';
+
 class Graph {
 
+  @observable
   private adjList: Map<number, number[]>;
+
+  @observable
   private ix: number;
 
   constructor() {

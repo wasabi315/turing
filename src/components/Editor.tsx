@@ -62,40 +62,35 @@ class Editor extends React.Component<EditorProps, EditorState> {
 
   renderNode = () => {
     let nodes: React.ReactElement[] = [];
-    this.state.nodePos.forEach((p: Point, i: number) => {
-      nodes.push(
+    this.state.nodePos.forEach((p, i) => nodes.push(
         <Node
           id={i}
           pos={p}
           onClick={e => this.handleNodeClick(e, i)}
           onDrag={e => this.handleNodeDrag(e, i)}
         />
-      );
-    });
+      )
+    );
     return nodes;
   }
 
   renderEdge = () => {
     let edges: React.ReactElement[] = [];
-    this.state.graph.forEachEdge((i, j) => {
-      if(i === j) {
-        edges.push(
+    this.state.graph.forEachEdge((i, j) => edges.push(
+      i === j
+        ?
           <Loop
             id={i}
             pos={this.state.nodePos.get(i)!}
           />
-        );
-      } else {
-        edges.push(
+        :
           <Edge
             startId={i}
             endId={j}
             startPos={this.state.nodePos.get(i)!}
             endPos={this.state.nodePos.get(j)!}
           />
-        );
-      }
-    });
+    ));
     return edges;
   }
 

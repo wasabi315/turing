@@ -51,8 +51,12 @@ class Graph {
     return this;
   }
 
-  forEachEdge(fn: (i: number, j: number) => void): void {
-    this.adjList.forEach((is, i) => is.forEach(j => fn(i, j)));
+  *edges(): IterableIterator<[number, number]> {
+    for(const [i, is] of this.adjList.entries()) {
+      for(const j of is.values()) {
+        yield [i, j];
+      }
+    }
   }
 
 }

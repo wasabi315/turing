@@ -1,33 +1,32 @@
-import * as React from 'react';
-import { KonvaEventObject } from 'konva/types/Node';
-import { Circle, Group, Text } from 'react-konva';
-import { observer } from 'mobx-react-lite';
-import { Point } from '../../lib/Point';
-import EditorStoreContext from '../stores/EditorStore';
-import GraphStoreContext from '../stores/GraphStore';
+import * as React from "react"
+import { KonvaEventObject } from "konva/types/Node"
+import { Circle, Group, Text } from "react-konva"
+import { observer } from "mobx-react-lite"
+import { Point } from "../../lib/Point"
+import EditorStoreContext from "../stores/EditorStore"
+import GraphStoreContext from "../stores/GraphStore"
 
 interface NodeProps {
-  id: number;
-  pos: Point;
+  id: number
+  pos: Point
 }
 
 const Node: React.SFC<NodeProps> = observer(props => {
-
-  const graphStore = React.useContext(GraphStoreContext);
-  const editorStore = React.useContext(EditorStoreContext);
+  const graphStore = React.useContext(GraphStoreContext)
+  const editorStore = React.useContext(EditorStoreContext)
 
   const handleClick = (_: KonvaEventObject<MouseEvent>) => {
-    if(editorStore.arrowStart === null) {
-      editorStore.arrowStart = props.id;
+    if (editorStore.arrowStart === null) {
+      editorStore.arrowStart = props.id
     } else {
-      graphStore.graph.addEdge(editorStore.arrowStart, props.id);
-      editorStore.arrowStart = null;
+      graphStore.graph.addEdge(editorStore.arrowStart, props.id)
+      editorStore.arrowStart = null
     }
   }
 
   const handleDrag = (e: KonvaEventObject<MouseEvent>) => {
-    const pos: Point = e.target.getStage().getPointerPosition();
-    editorStore.nodePos.set(props.id, pos);
+    const pos: Point = e.target.getStage().getPointerPosition()
+    editorStore.nodePos.set(props.id, pos)
   }
 
   return (
@@ -63,7 +62,6 @@ const Node: React.SFC<NodeProps> = observer(props => {
       />
     </Group>
   )
-
 })
 
-export default Node;
+export default Node

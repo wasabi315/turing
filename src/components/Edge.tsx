@@ -1,25 +1,24 @@
-import * as React from 'react';
-import { Arrow } from 'react-konva';
-import { Point } from '../../lib/Point';
+import * as React from "react"
+import { Arrow } from "react-konva"
+import { Point } from "../../lib/Point"
 
 interface EdgeProps {
-  startId: number;
-  endId: number;
-  startPos: Point;
-  endPos: Point;
+  startId: number
+  endId: number
+  startPos: Point
+  endPos: Point
 }
 
 const Edge: React.SFC<EdgeProps> = props => {
-
-  const { x: startX, y: startY } = props.startPos;
-  const { x: endX, y: endY } = props.endPos;
-  const theta = Math.atan2(endY - startY, endX - startX);
-  const points =
-    [ props.startPos.x + 45 * Math.cos(theta),
-      props.startPos.y + 45 * Math.sin(theta),
-      props.endPos.x - 45 * Math.cos(theta),
-      props.endPos.y - 45 * Math.sin(theta)
-    ];
+  const { x: startX, y: startY } = props.startPos
+  const { x: endX, y: endY } = props.endPos
+  const theta = Math.atan2(endY - startY, endX - startX)
+  const points = [
+    props.startPos.x + 45 * Math.cos(theta),
+    props.startPos.y + 45 * Math.sin(theta),
+    props.endPos.x - 45 * Math.cos(theta),
+    props.endPos.y - 45 * Math.sin(theta),
+  ]
   return (
     <Arrow
       points={points}
@@ -33,8 +32,7 @@ const Edge: React.SFC<EdgeProps> = props => {
       pointerWidth={20}
       pointerLength={20}
     />
-  );
-
+  )
 }
 
-export default Edge;
+export default Edge

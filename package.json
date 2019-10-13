@@ -9,7 +9,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-konva": "^16.8.7-2",
-    "styled-components": "^4.2.1"
+    "styled-components": "^4.2.1",
+    "unstated-next": "^1.1.0"
   },
   "devDependencies": {
     "@types/react": "^16.8.18",
